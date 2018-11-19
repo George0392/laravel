@@ -1,0 +1,11 @@
+commit c5e5bbe112a693e9e2878d80479eb0664fd39223
+Author: DonBot <georgegalindez@gmail.com>
+Date:   Thu Jan 1 01:12:08 2009 -0400
+
+     LARAVEL 57 CRUD
+
+commit c201c9ff0006dcd31ba99b783d22bdd089b10c2d
+Author: DonBot <georgegalindez@gmail.com>
+Date:   Sun Jan 28 17:00:34 2018 -0400
+
+    laravel 5.7 base
