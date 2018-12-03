@@ -14,6 +14,7 @@ class CreateDetalleVentaTable extends Migration
     public function up()
     {
         Schema::create('detalle_venta', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('iddetalle_venta');
             $table->integer('id_venta')->unsigned();
             $table->integer('id_articulo')->unsigned();

@@ -14,6 +14,7 @@ class CreateIngresoTable extends Migration
     public function up()
     {
         Schema::create('ingreso', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id_ingreso');
             $table->integer('id_proveedor')->unsigned();
             $table->string('tipo_comprobante', 50);

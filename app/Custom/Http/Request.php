@@ -1,4 +1,6 @@
-<?php namespace App\Custom\Http;
+<?php
+
+namespace sisven\Custom\Http;
 
 use \Illuminate\Http\Request as Base;
 

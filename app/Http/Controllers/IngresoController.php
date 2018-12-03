@@ -18,6 +18,11 @@ use Illuminate\Support\Collection;
 class IngresoController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(Request $request)
     {
         if ($request) {
@@ -89,21 +94,22 @@ class IngresoController extends Controller
 
             DB::commit();
         } catch (\Exception $e) {
-             DB::rollback();
+            DB::rollback();
         }
-            return Redirect::to('almacen/ingreso');
+        return Redirect::to('almacen/ingreso');
     }
 
     public function show($id)
-    {
-        $ingreso=DB::table('ingreso as I')
-        ->join('personas as P', 'I.id_proveedor', '=', 'P.id_persona')
-        ->join('detalle_ingreso as DI', 'I.id_ingreso', '=', 'DI.id_ingreso')
-        ->select('I.id_ingreso', 'I.fecha_hora', 'P.nombre', 'I.tipo_comprobante', 'I.num_comprobante', 'I.serie_comprobante', 'I.impuesto', 'I.estado', DB::raw('SUM(DI.cantidad * DI.precio_compra) as total '))
-        ->where('I.id_ingreso', '=', $id)
-        ->first();
+    { $ingreso=DB::table('ingreso as I')
+            ->join('persona as P', 'I.id_proveedor', '=', 'P.id_persona')
+            ->join('detalle_ingreso as DI', 'I.id_ingreso', '=', 'DI.id_ingreso')
+            ->select('I.id_ingreso', 'I.fecha_hora', 'P.nombre', 'I.tipo_comprobante', 'I.serie_comprobante', 'I.num_comprobante', 'I.impuesto', 'I.estado', DB::raw('SUM(DI.cantidad * DI.precio_compra) as total '))
+            ->where('I.id_ingreso', '=', $id)
+            ->groupBy('I.id_ingreso', 'I.fecha_hora', 'P.nombre', 'I.tipo_comprobante', 'I.serie_comprobante', 'I.num_comprobante', 'I.impuesto', 'I.estado')
+            ->first();
+
         $detalles=DB::table('Detalle_ingreso as DI')
-        ->join('articulos as A', 'DI.id_articulo', '=', 'A.id_articulo')
+        ->join('articulo as A', 'DI.id_articulo', '=', 'A.id_articulo')
         ->select('A.nombre as articulo', 'DI.cantidad', 'DI.precio_compra', 'DI.precio_venta')
         ->where('DI.id_ingreso', '=', $id)
         ->get();

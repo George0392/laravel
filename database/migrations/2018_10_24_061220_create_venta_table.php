@@ -14,6 +14,7 @@ class CreateVentaTable extends Migration
     public function up()
     {
         Schema::create('venta', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id_venta');
             $table->integer('id_cliente')->unsigned();
             $table->integer('id_usuario')->unsigned();

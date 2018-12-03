@@ -14,6 +14,7 @@ class CreateArticuloTable extends Migration
     public function up()
     {
         Schema::create('articulo', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id_articulo');
             $table->integer('id_categoria')->unsigned();
             $table->string('nombre', 100);
