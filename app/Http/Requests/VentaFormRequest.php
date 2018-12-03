@@ -1,0 +1,40 @@
+<?php
+
+namespace sisven\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class VentaFormRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            // venta
+        'id_cliente',
+        'tipo_comprobante',
+        'serie_comprobante',
+        'numero_comprobante',
+        'id_articulo',
+        'cantidad',
+        'descuento',
+        'total_venta',
+        'precio_venta',
+
+        ];
+    }
+}
