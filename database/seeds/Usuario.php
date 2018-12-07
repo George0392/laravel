@@ -13,12 +13,12 @@ class Usuario extends Seeder
     {
       DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        DB::table('users')->truncate();
+            DB::table('users')->truncate();
 
-        DB::table('users')->insert([
+            DB::table('users')->insert([
             'name'     => 'Admin',
-            'email'      => '123@123.com',
-            'password'   => bcrypt(123),
+            'email'    => '123@123.com',
+            'password' => bcrypt(123),
         ]);
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');

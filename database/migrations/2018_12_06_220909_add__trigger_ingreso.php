@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddTriggerUpdateStock extends Migration
+class AddTriggerIngreso extends Migration
 {
     /**
      * Run the migrations.
@@ -15,16 +15,14 @@ class AddTriggerUpdateStock extends Migration
     {
 
          DB::unprepared(
-            'CREATE TRIGGER tr_update_stock_ventas AFTER insert ON detalle_venta
+             'CREATE TRIGGER trigger_update_stock_ingreso AFTER insert ON detalle_ingreso
             FOR EACH ROW
             BEGIN
-            UPDATE articulo SET stock = stock - NEW.cantidad
+            UPDATE articulo SET stock = stock + NEW.cantidad
             WHERE articulo.id_articulo = NEW.id_articulo;
             END
             '
-
          );
-
     }
 
     /**
@@ -34,6 +32,6 @@ class AddTriggerUpdateStock extends Migration
      */
     public function down()
     {
-        DB::unprepared('DROP TRIGGER tr_update_stock_ventas');
+        DB::unprepared('DROP TRIGGER trigger_update_stock_ingreso');
     }
 }

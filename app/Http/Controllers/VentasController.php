@@ -27,29 +27,31 @@ class VentasController extends Controller
     public function index(Request $request)
     {
         if ($request) {
-            $query=trim($request->get('searchText'));
-            $ingreso=DB::table('ingreso as I')
-            ->join('persona as P', 'I.id_proveedor', '=', 'P.id_persona')
-            ->join('detalle_ingreso as DI', 'I.id_ingreso', '=', 'DI.id_ingreso')
-            ->select('I.id_ingreso', 'I.fecha_hora', 'P.nombre', 'I.tipo_comprobante', 'I.serie_comprobante', 'I.num_comprobante', 'I.impuesto', 'I.estado', DB::raw('SUM(DI.cantidad * DI.precio_compra) as total '))
+			$query = trim($request->get('searchText'));
+			$venta = DB::table('venta as V')
+            ->join('persona as P', 'P.id_persona', '=', 'V.id_cliente')
+            ->join('detalle_venta as DV', 'V.id_venta', '=', 'DV.id_venta')
+            ->select('V.id_venta','V.fecha_hora','P.nombre','V.tipo_comprobante','V.serie_comprobante','V.num_comprobante','V.impuesto','V.estado','V.total_venta')
             ->where('I.num_comprobante', 'LIKE', '%'.$query.'%')
             ->orwhere('P.nombre', 'LIKE', '%'.$query.'%')
-            ->orderBy('I.id_ingreso', 'desc')
-            ->groupBy('I.id_ingreso', 'I.fecha_hora', 'P.nombre', 'I.tipo_comprobante', 'I.serie_comprobante', 'I.num_comprobante', 'I.impuesto', 'I.estado')
+            ->orderBy('V.id_venta', 'desc')
+            ->groupBy('V.id_venta','V.fecha_hora','P.nombre','V.tipo_comprobante','V.serie_comprobante','V.num_comprobante','V.impuesto','V.estado')
             ->paginate(50);
-            return view('almacen.ingreso.index', ["ingreso"=>$ingreso,"searchText"=>$query]);
+            return view('almacen.venta.index', ["venta"=>$venta,"searchText"=>$query]);
         }
     }
 
 
     public function create()
     {
-        $personas=DB::table('persona')->where('tipo_persona', '=', 'proveedor')->get();
-        $articulos=DB::table('articulo as ART')
-        ->select(DB::raw('CONCAT(ART.codigo," - ",ART.nombre) as articulo'), 'ART.id_articulo')
-        ->where('ART.estado', '=', 'Activo')
+		$personas  = DB::table('persona')->get();
+		$articulos = DB::table('articulo as ART')
+       ->join('detalle_ingreso as DI','DI.id_articulo','=','ART.id_articulo')
+       ->select(DB::raw('CONCAT(ART.codigo,"-",ART.nombre) as articulo'),'ART.id_articulo','ART.stock','DI.precio_venta')
+       ->where('ART.estado','=','activo')
+       ->where('ART.stock','>','0')
         ->get();
-        return view('almacen.ingreso.create', ["personas"=>$personas,"articulos"=>$articulos]);
+        return view('almacen.venta.create', ["personas"=>$personas,"articulos"=>$articulos]);
     }
 
 
@@ -101,29 +103,30 @@ class VentasController extends Controller
     }
 
     public function show($id)
-    { $ingreso=DB::table('ingreso as I')
-            ->join('persona as P', 'I.id_proveedor', '=', 'P.id_persona')
-            ->join('detalle_ingreso as DI', 'I.id_ingreso', '=', 'DI.id_ingreso')
-            ->select('I.id_ingreso', 'I.fecha_hora', 'P.nombre', 'I.tipo_comprobante', 'I.serie_comprobante', 'I.num_comprobante', 'I.impuesto', 'I.estado', DB::raw('SUM(DI.cantidad * DI.precio_compra) as total '))
-            ->where('I.id_ingreso', '=', $id)
-            ->groupBy('I.id_ingreso', 'I.fecha_hora', 'P.nombre', 'I.tipo_comprobante', 'I.serie_comprobante', 'I.num_comprobante', 'I.impuesto', 'I.estado')
+    { $venta=$venta = DB::table('venta as V')
+            ->join('persona as P', 'P.id_persona', '=', 'V.id_cliente')
+            ->join('detalle_venta as DV', 'V.id_venta', '=', 'DV.id_venta')
+            ->select('V.id_venta','V.fecha_hora','P.nombre','V.tipo_comprobante','V.serie_comprobante','V.num_comprobante','V.impuesto','V.estado','V.total_venta')
+            ->where('V.id_venta', '=', $id)
+            ->groupBy('V.id_venta','V.fecha_hora','P.nombre','V.tipo_comprobante','V.serie_comprobante','V.num_comprobante','V.impuesto','V.estado','V.total_venta')
             ->first();
 
-        $detalles=DB::table('Detalle_ingreso as DI')
-        ->join('articulo as A', 'DI.id_articulo', '=', 'A.id_articulo')
-        ->select('A.nombre as articulo', 'DI.cantidad', 'DI.precio_compra', 'DI.precio_venta')
-        ->where('DI.id_ingreso', '=', $id)
+        $detalles=DB::table('Detalle_venta as DV')
+        ->join('articulo as A', 'DV.id_articulo', '=', 'A.id_articulo')
+        ->select('A.nombre as articulo', 'DV.cantidad')
+        ->where('DV.id_venta', '=', $id)
         ->get();
-        return view("almacen.ingreso.show", ["ingreso"=>$ingreso,"detalles"=>$detalles]);
+
+        return view("almacen.venta.show", ["venta"=>$venta,"detalles"=>$detalles]);
     }
 
 
     public function destroy($id)
     {
-        $ingreso=Ingreso::findOrFail($id);
-        $ingreso->estado='N/A';
-        $ingreso->update();
-        return Redirect::to('almacen/ingreso');
+        $venta=Venta::findOrFail($id);
+        $venta->estado='N/A';
+        $venta->update();
+        return Redirect::to('almacen/venta');
     }
 }
 

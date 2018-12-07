@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         factory(Articulo::class, 90)->create();
         factory(Ingreso::class, 90)->create();
         factory(Detalle_ingreso::class, 90)->create();
+        $this->call(Usuario::class);
     }
 }
