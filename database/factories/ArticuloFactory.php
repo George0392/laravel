@@ -7,7 +7,7 @@ $factory->define(sisven\Articulo::class, function (Faker $faker) {
     return [
     'id_categoria'=> Categoria::all()->random()->id_categoria,
     'nombre'      => $faker->name,
-    'codigo'      => str_random(5),
+    'codigo'       =>$faker->numberBetween(1000000,32000000),
     'stock'       => Categoria::all()->random()->id_categoria,
     'descripcion' => $faker->text,
     'imagen'      => str_random(5).'.jpg',

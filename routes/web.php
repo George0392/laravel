@@ -21,7 +21,7 @@ Route::resource('almacen/articulo', 'ArticuloController');
 Route::resource('almacen/cliente', 'PersonaController');
 Route::resource('almacen/proveedor', 'ProveedorController');
 Route::resource('almacen/ingreso', 'IngresoController');
-
+Route::resource('almacen/venta', 'VentasController');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

@@ -2,7 +2,6 @@
 
 namespace sisven\Http\Controllers;
 
-
 use Illuminate\Http\Request;
 use Illuminate\Http\Requests;
 use Illuminate\Support\Facades\Redirect;
@@ -27,15 +26,16 @@ class VentasController extends Controller
     public function index(Request $request)
     {
         if ($request) {
-			$query = trim($request->get('searchText'));
-			$venta = DB::table('venta as V')
+            $query = trim($request->get('searchText'));
+            $venta = DB::table('venta as V')
             ->join('persona as P', 'P.id_persona', '=', 'V.id_cliente')
             ->join('detalle_venta as DV', 'V.id_venta', '=', 'DV.id_venta')
-            ->select('V.id_venta','V.fecha_hora','P.nombre','V.tipo_comprobante','V.serie_comprobante','V.num_comprobante','V.impuesto','V.estado','V.total_venta')
-            ->where('I.num_comprobante', 'LIKE', '%'.$query.'%')
+            ->select('V.id_venta', 'V.fecha_hora', 'P.nombre', 'V.tipo_comprobante', 'V.serie_comprobante', 'V.num_comprobante', 'V.impuesto', 'V.estado', DB::raw('AVG(V.total_venta
+        ) as total_venta '))
+            ->where('V.num_comprobante', 'LIKE', '%'.$query.'%')
             ->orwhere('P.nombre', 'LIKE', '%'.$query.'%')
             ->orderBy('V.id_venta', 'desc')
-            ->groupBy('V.id_venta','V.fecha_hora','P.nombre','V.tipo_comprobante','V.serie_comprobante','V.num_comprobante','V.impuesto','V.estado')
+            ->groupBy('V.id_venta', 'V.fecha_hora', 'P.nombre', 'V.tipo_comprobante', 'V.serie_comprobante', 'V.num_comprobante', 'V.impuesto', 'V.estado')
             ->paginate(50);
             return view('almacen.venta.index', ["venta"=>$venta,"searchText"=>$query]);
         }
@@ -44,51 +44,54 @@ class VentasController extends Controller
 
     public function create()
     {
-		$personas  = DB::table('persona')->get();
-		$articulos = DB::table('articulo as ART')
-       ->join('detalle_ingreso as DI','DI.id_articulo','=','ART.id_articulo')
-       ->select(DB::raw('CONCAT(ART.codigo,"-",ART.nombre) as articulo'),'ART.id_articulo','ART.stock','DI.precio_venta')
-       ->where('ART.estado','=','activo')
-       ->where('ART.stock','>','0')
+        $personas  = DB::table('persona')->get();
+        $articulos = DB::table('articulo as ART')
+        ->join('detalle_ingreso as DI', 'DI.id_articulo', '=', 'ART.id_articulo')
+        ->select(DB::raw('CONCAT(ART.codigo,"-",ART.nombre) as articulo'), 'ART.id_articulo', 'ART.stock', 'DI.precio_venta')
+        ->where('ART.estado', '=', 'activo')
+        ->where('ART.stock', '>', '0')
         ->get();
         return view('almacen.venta.create', ["personas"=>$personas,"articulos"=>$articulos]);
     }
 
 
-    public function store(IngresoFormRequest $request)
+    public function store(VentaFormRequest $request)
     {
         try {
             DB::beginTransaction();
 
             // primero cargar en una tabla luego en otra
-            $ingreso= new Ingreso;
-            $ingreso->id_proveedor=$request->get('id_proveedor');
-            $ingreso->tipo_comprobante=$request->get('tipo_comprobante');
-            $ingreso->serie_comprobante=$request->get('serie_comprobante');
-            $ingreso->num_comprobante=$request->get('numero_comprobante');
+            $venta= new Venta;
+            $venta->id_cliente=$request->get('id_cliente');
+            $venta->tipo_comprobante=$request->get('tipo_comprobante');
+            $venta->serie_comprobante=$request->get('serie_comprobante');
+            $venta->num_comprobante=$request->get('numero_comprobante');
+            $venta->total_venta=$request->get('total_venta');
+
             // hora actual
             $mytime = Carbon::now('America/Caracas');
             //convertir a hora legible
-            $ingreso->fecha_hora=$mytime->toDateTimeString();
-            $ingreso->impuesto='16';
-            $ingreso->estado='Activo';
-            $ingreso->save();
+            $venta->fecha_hora=$mytime->toDateTimeString();
 
-            //cargar valores en tabla relacion Detalle_Ingreso
+            $venta->impuesto='18';
+            $venta->estado='Activo';
+            $venta->save();
+
+            //cargar valores en tabla relacion Detalle_Venta
             $id_articulo=$request->get('id_articulo');
             $cantidad=$request->get('cantidad');
-            $precio_compra=$request->get('precio_compra');
+            $descuento=$request->get('descuento');
             $precio_venta=$request->get('precio_venta');
 
             // carga de valores desde tabla en la vista con javascript
 
             $cont=0;
             while ($cont < count($id_articulo)) {
-                $detalle=new Detalle_ingreso();
-                $detalle->id_ingreso=$ingreso->id_ingreso;
+                $detalle=new Detalle_venta();
+                $detalle->id_venta=$venta->id_venta;
                 $detalle->id_articulo=$id_articulo[$cont];
                 $detalle->cantidad=$cantidad[$cont];
-                $detalle->precio_compra=$precio_compra[$cont];
+                $detalle->descuento=$descuento[$cont];
                 $detalle->precio_venta=$precio_venta[$cont];
                 $detalle->save();
 
@@ -98,22 +101,23 @@ class VentasController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
+            return Redirect::to('almacen/venta/create');
         }
-        return Redirect::to('almacen/ingreso');
+        return Redirect::to('almacen/venta');
     }
 
     public function show($id)
-    { $venta=$venta = DB::table('venta as V')
+    {
+         $venta = DB::table('venta as V')
             ->join('persona as P', 'P.id_persona', '=', 'V.id_cliente')
             ->join('detalle_venta as DV', 'V.id_venta', '=', 'DV.id_venta')
-            ->select('V.id_venta','V.fecha_hora','P.nombre','V.tipo_comprobante','V.serie_comprobante','V.num_comprobante','V.impuesto','V.estado','V.total_venta')
+            ->select('V.id_venta', 'V.fecha_hora', 'P.nombre', 'V.tipo_comprobante', 'V.serie_comprobante', 'V.num_comprobante', 'V.impuesto', 'V.estado')
             ->where('V.id_venta', '=', $id)
-            ->groupBy('V.id_venta','V.fecha_hora','P.nombre','V.tipo_comprobante','V.serie_comprobante','V.num_comprobante','V.impuesto','V.estado','V.total_venta')
             ->first();
 
         $detalles=DB::table('Detalle_venta as DV')
         ->join('articulo as A', 'DV.id_articulo', '=', 'A.id_articulo')
-        ->select('A.nombre as articulo', 'DV.cantidad')
+        ->select('A.nombre as articulo', 'DV.cantidad', 'DV.descuento', 'DV.precio_venta')
         ->where('DV.id_venta', '=', $id)
         ->get();
 
@@ -124,9 +128,8 @@ class VentasController extends Controller
     public function destroy($id)
     {
         $venta=Venta::findOrFail($id);
-        $venta->estado='N/A';
+        $venta->estado='Cancelado';
         $venta->update();
         return Redirect::to('almacen/venta');
     }
 }
-

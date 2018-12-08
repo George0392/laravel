@@ -38,7 +38,10 @@
 				<tr>
 					<td>{{ $art->id_articulo }}</td>
 					<td class="text-uppercase" >{{ $art->nombre }}</td>
-					<td>{{ $art->codigo }}</td>
+					<td>@php
+						echo DNS1D::getBarcodeHTML("$art->codigo", "EAN13", 2,60)
+						@endphp
+					</td>
 					<td>{{ $art->categoria }}</td>
 					<td>{{ $art->stock }}</td>
 					<td><img src="{{ asset('img/articulos/'.$art->imagen) }}" alt="{{$art->nombre }}" height="100px" width="100px" class="img-thumbnail"></td>

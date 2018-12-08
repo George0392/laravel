@@ -6,6 +6,14 @@
 		<!-- sidebar menu: : style can be found in sidebar.less -->
 		<ul class="sidebar-menu">
 			<li class="header"></li>
+
+			<li>
+				<a href="{{URL::action('HomeController@index')}}">
+					<i class="fa fa-shopping-cart "></i> <span>Inicio</span>
+					<small class="label pull-right bg-yellow">W51</small>
+				</a>
+			</li>
+
 			<li class="treeview">
 				<a href="#">
 					<i class="fa fa-laptop"></i>
@@ -14,7 +22,7 @@
 				</a>
 				<ul class="treeview-menu">
 					<li><a href="{{URL::action('ArticuloController@index')}}"><i class="fa fa-circle-o"></i> Artículos</a></li>
-					<li><a href="almacen/categoria"><i class="fa fa-circle-o"></i> Categorías</a></li>
+					<li><a href="{{URL::action('CategoriaController@index')}}"><i class="fa fa-circle-o"></i> Categorías</a></li>
 				</ul>
 			</li>
 			<li class="treeview">
@@ -35,7 +43,7 @@
 					<i class="fa fa-angle-left pull-right"></i>
 				</a>
 				<ul class="treeview-menu">
-					{{-- <li><a href="{{URL::action('VentasController@index')}}"><i class="fa fa-circle-o"></i> Ventas</a></li> --}}
+					<li><a href="{{URL::action('VentasController@index')}}"><i class="fa fa-circle-o"></i> Ventas</a></li>
 					<li><a href="{{URL::action('PersonaController@index')}}"><i class="fa fa-circle-o"></i> Clientes</a></li>
 				</ul>
 			</li>
@@ -57,7 +65,7 @@
 			<li>
 				<a href="#">
 					<i class="fa fa-info-circle"></i> <span>Acerca De...</span>
-					<small class="label pull-right bg-yellow">IT</small>
+					<small class="label pull-right bg-yellow">W51</small>
 				</a>
 			</li>
 		</ul>

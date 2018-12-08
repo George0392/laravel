@@ -1,23 +1,33 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+@section('contenido')
+{{--
+###########################################################
+#
+#                    contenido categoria
+#
+###########################################################
+--}}
+<div class="row">
+    <div class="col-xs-12 col-sm-8">
+        <h3>Estadisticas de Ventas</h3>
+        {{--
+        ###########################################################
+        #
+        #                    campo de busqueda
+        #
+        ###########################################################
+        --}}
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Dashboard</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                   weeeeeeeeeeeeeepale...
-                </div>
-            </div>
-        </div>
     </div>
 </div>
+<div class="row">
+    <h1>hola</h1>
+</div>
+{{--
+###########################################################
+#
+#                    fin contenido categoria
+#
+###########################################################
+--}}
 @endsection

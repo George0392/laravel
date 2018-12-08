@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Redirect;
 use sisven\Http\Requests\ArticuloFormRequest;
 // libreria para cargar imagenes
 use Illuminate\Support\Facades\Input;
+//Generar codigo de barras
+use \Milon\Barcode\DNS1D;
+use \Milon\Barcode\DNS2D;
 
 use DB;
 
@@ -31,9 +34,10 @@ class ArticuloController extends Controller
             ->where('A.codigo', 'LIKE', '%'.$query.'%')
             ->orwhere('A.id_articulo', 'LIKE', '%'.$query.'%')
             ->orderBy('id_articulo', 'DESC')
-            ->paginate(25);
+            ->paginate(50);
+            $codigo_barras = new DNS1D();
             // html del formulario con nombre searchtext y categorias
-            return view('almacen.articulo.index', ["articulos"=>$articulos,"searchText"=>$query]);
+            return view('almacen.articulo.index', ["articulos"=>$articulos,"searchText"=>$query,"codigo_barras"=>$codigo_barras]);
         }
     }
 // carga la vista almacen/articulo/create se le envia $categorias para cargar la tabla y asignar la llave foranea

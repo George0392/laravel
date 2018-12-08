@@ -149,6 +149,8 @@ return [
 
         // soporte formularios
         Collective\Html\HtmlServiceProvider::class,
+        //generar codigos de barras
+        Milon\Barcode\BarcodeServiceProvider::class,
         // generar PDF
         Barryvdh\DomPDF\ServiceProvider::class,
 
@@ -217,6 +219,10 @@ return [
         // soporte formularios
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+
+        //generar codigos de barras
+        'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
+        'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
 
         // generar pdf
         'PDF' => 'Barryvdh\DomPDF\Facade',
