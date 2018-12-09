@@ -21,7 +21,7 @@ class CreateVentaTable extends Migration
             $table->string('tipo_comprobante',50);
             $table->string('serie_comprobante');
             $table->string('num_comprobante');
-            $table->datetime('fecha_hora');
+            $table->date('fecha_hora');
             $table->decimal('impuesto',18,2);
             $table->decimal('total_venta',18,2);
             $table->string('estado');

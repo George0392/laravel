@@ -15,7 +15,7 @@ Route::get('/', function () {
      return view('auth/login');
     // return view('almacen.categoria.edit');
 });
-
+Route::get('almacen/venta/filtro', 'VentasController@filtro_fechas');
 Route::resource('almacen/categoria', 'CategoriaController');
 Route::resource('almacen/articulo', 'ArticuloController');
 Route::resource('almacen/cliente', 'PersonaController');
