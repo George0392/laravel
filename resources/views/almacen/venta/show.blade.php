@@ -7,6 +7,11 @@
 #
 ###########################################################
 --}}
+
+@php
+	$iva=16;
+@endphp
+
 <div class="row">
 	<div class="col-xs-12">
 		<div class="form-group">
@@ -46,8 +51,27 @@
 				<th></th>
 				<th></th>
 				<th>
-					<h4 id="total" >Total <strong class="text-danger">BsS. {{  number_format(round($venta->total_venta, 2), 2, ',', '.') }}</strong>
-					</h4>
+					<table class="pull-right">
+						<tr>
+							<td class="text-right"><h4>SubTotal: BsS : </h4></td>
+							<td class="text-left"><h4> {{  number_format(round($venta->total_venta, 2), 2, ',', '.') }}</h4>
+							</td>
+						</tr>
+
+						<tr>
+							<td class="text-right"><h4>IVA: <span class="text-danger">{{ $iva }}</span> %:  BsS : </h4></td>
+							<td class="text-left"><h4> {{  number_format(round($venta->impuesto, 2), 2, ',', '.') }}</h4>
+							</td>
+						</tr>
+
+						<tr>
+							<td class="text-right"><h3>Total BsS : </h3></td>
+							<td class="text-left"><h3> {{  number_format(round($venta->impuesto + $venta->total_venta, 2), 2, ',', '.') }}</h3>
+							</td>
+						</tr>
+
+					</table>
+
 				</th>
 				</tfoot>
 				<tbody>

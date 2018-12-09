@@ -58,7 +58,7 @@ class VentasController extends Controller
     public function store(VentaFormRequest $request)
     {
 
-    $impuesto=18;
+    $iva=16/100;
 
         try {
             DB::beginTransaction();
@@ -70,14 +70,15 @@ class VentasController extends Controller
             $venta->serie_comprobante=$request->get('serie_comprobante');
             $venta->num_comprobante=$request->get('numero_comprobante');
             $venta->total_venta=$request->get('total_venta');
+            $total_ventas=$venta->total_venta;
 
             // hora actual
             $mytime = Carbon::now('America/Caracas');
             //convertir a hora legible
             $venta->fecha_hora=$mytime->toDateTimeString();
 
-            $venta->impuesto=$impuesto;
             $venta->estado='Activo';
+            $venta->impuesto= $total_ventas * $iva;
             $venta->save();
 
             //cargar valores en tabla relacion Detalle_Venta
