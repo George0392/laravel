@@ -18,6 +18,7 @@ use Illuminate\Support\Collection;
 class VentasController extends Controller
 {
 
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -30,8 +31,7 @@ class VentasController extends Controller
             $venta = DB::table('venta as V')
             ->join('persona as P', 'P.id_persona', '=', 'V.id_cliente')
             ->join('detalle_venta as DV', 'V.id_venta', '=', 'DV.id_venta')
-            ->select('V.id_venta', 'V.fecha_hora', 'P.nombre', 'V.tipo_comprobante', 'V.serie_comprobante', 'V.num_comprobante', 'V.impuesto', 'V.estado', DB::raw('AVG(V.total_venta
-        ) as total_venta '))
+            ->select('V.id_venta', 'V.fecha_hora', 'P.nombre', 'V.tipo_comprobante', 'V.serie_comprobante', 'V.num_comprobante', 'V.impuesto', 'V.estado', DB::raw('AVG(V.total_venta) as total_venta '))
             ->where('V.num_comprobante', 'LIKE', '%'.$query.'%')
             ->orwhere('P.nombre', 'LIKE', '%'.$query.'%')
             ->orderBy('V.id_venta', 'desc')
@@ -57,6 +57,9 @@ class VentasController extends Controller
 
     public function store(VentaFormRequest $request)
     {
+
+    $impuesto=18;
+
         try {
             DB::beginTransaction();
 
@@ -73,7 +76,7 @@ class VentasController extends Controller
             //convertir a hora legible
             $venta->fecha_hora=$mytime->toDateTimeString();
 
-            $venta->impuesto='18';
+            $venta->impuesto=$impuesto;
             $venta->estado='Activo';
             $venta->save();
 
@@ -111,11 +114,12 @@ class VentasController extends Controller
          $venta = DB::table('venta as V')
             ->join('persona as P', 'P.id_persona', '=', 'V.id_cliente')
             ->join('detalle_venta as DV', 'V.id_venta', '=', 'DV.id_venta')
-            ->select('V.id_venta', 'V.fecha_hora', 'P.nombre', 'V.tipo_comprobante', 'V.serie_comprobante', 'V.num_comprobante', 'V.impuesto', 'V.estado')
+            ->select('V.id_venta', 'V.fecha_hora', 'P.nombre', 'V.tipo_comprobante', 'V.serie_comprobante', 'V.num_comprobante', 'V.impuesto', 'V.estado', DB::raw('AVG(V.total_venta) as total_venta '))
             ->where('V.id_venta', '=', $id)
+            ->groupBy('V.id_venta', 'V.fecha_hora', 'P.nombre', 'V.tipo_comprobante', 'V.serie_comprobante', 'V.num_comprobante', 'V.impuesto', 'V.estado')
             ->first();
 
-        $detalles=DB::table('Detalle_venta as DV')
+        $detalles=DB::table('detalle_venta as DV')
         ->join('articulo as A', 'DV.id_articulo', '=', 'A.id_articulo')
         ->select('A.nombre as articulo', 'DV.cantidad', 'DV.descuento', 'DV.precio_venta')
         ->where('DV.id_venta', '=', $id)

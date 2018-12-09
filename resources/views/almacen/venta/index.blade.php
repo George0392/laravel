@@ -51,9 +51,9 @@
 					<td>{{ $vent->fecha_hora }}</td>
 					<td>{{ $vent->nombre }}</td>
 					<td>{{ $vent->tipo_comprobante }}:{{ $vent->serie_comprobante }} -{{ $vent->num_comprobante }}</td>
-					<td>{{ $vent->impuesto }}</td>
+					<td>{{ $vent->impuesto }} % </td>
 					<td>{{ $vent->estado }}</td>
-					<td>{{ $vent->total_venta}}</td>
+					<td>BsS. {{  number_format(round($vent->total_venta, 2), 2, ',', '.') }}</td>
 					<td>
 						<a href="{{URL::action('VentasController@show',$vent->id_venta)}}"><button class="btn btn-info">Ver Detalle</button></a>
 
