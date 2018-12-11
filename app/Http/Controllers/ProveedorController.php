@@ -19,20 +19,18 @@ class ProveedorController extends Controller
 
     public function index(Request $request)
     {
-        if ($request) {
-            // html del formulario con nombre searchtext
-            $query=trim($request->get('searchText'));
-            // consulta a la tabla persona
-            $personas=DB::table('persona')
-            ->where('nombre', 'LIKE', '%'.$query.'%')
-            ->where('tipo_persona', '=', 'proveedor')
-            ->orwhere('numero_documento', 'LIKE', '%'.$query.'%')
-            ->where('tipo_persona', '=', 'proveedor')
-            ->orderBy('id_persona', 'desc')
-            ->paginate(25);
-            // html del formulario con nombre searchtext y personas
-            return view('almacen.proveedor.index', ["personas"=>$personas,"searchText"=>$query]);
-        }
+        $nombre    = $request->get('nombre');
+        $NumeroDocumento = $request->get('numero_documento');
+        $cliente   = 'proveedor';
+
+        $personas  = Persona::orderBy('id_persona','DESC')
+        ->nombre($nombre)
+        ->NumeroDocumento($NumeroDocumento)
+        ->cliente($cliente)
+        ->paginate(25);
+
+        return view('almacen.proveedor.index', compact('personas'));
+
     }
 
     public function create()

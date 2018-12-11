@@ -9,7 +9,7 @@
 --}}
 <div class="row">
 	<div class="col-xs-12 col-sm-8">
-		<h3>Listado de Clientes <a href="cliente/create" class="btn btn-primary "> Nuevo </a> </h3>
+		<h3 style="display: contents;">Listado de Clientes <a href="cliente/create" class="btn btn-primary "> Nuevo </a> </h3>
 		{{--
 		###########################################################
 		#

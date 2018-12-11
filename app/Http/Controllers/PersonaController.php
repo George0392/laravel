@@ -19,20 +19,17 @@ class PersonaController extends Controller
 
     public function index(Request $request)
     {
-        if ($request) {
-            // html del formulario con nombre searchtext
-            $query=trim($request->get('searchText'));
-            // consulta a la tabla persona
-            $personas=DB::table('persona')
-            ->where('nombre', 'LIKE', '%'.$query.'%')
-            ->where('tipo_persona', '=', 'cliente')
-            ->orwhere('numero_documento', 'LIKE', '%'.$query.'%')
-            ->where('tipo_persona', '=', 'cliente')
-            ->orderBy('id_persona', 'desc')
-            ->paginate(25);
-            // html del formulario con nombre searchtext y personas
-            return view('almacen.cliente.index', ["personas"=>$personas,"searchText"=>$query]);
-        }
+        $nombre    = $request->get('nombre');
+        $NumeroDocumento = $request->get('numero_documento');
+        $cliente   = 'cliente';
+
+        $personas  = Persona::orderBy('id_persona','DESC')
+        ->nombre($nombre)
+        ->NumeroDocumento($NumeroDocumento)
+        ->cliente($cliente)
+        ->paginate(25);
+
+        return view('almacen.cliente.index', compact('personas'));
     }
 
     public function create()

@@ -17,21 +17,21 @@ class CategoriaController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(Request $request)
+public function index(Request $request)
     {
-        if ($request) {
-            // html del formulario con nombre searchtext
-            $query=trim($request->get('searchText'));
-            // consulta a la tabla categoria
-            $categorias=DB::table('categoria')
-            ->where('nombre', 'LIKE', '%'.$query.'%')
-            ->where('condicion', '=', '1')
-            ->orderBy('id_categoria', 'desc')
+        // variables del query scope
+         $nombre      = $request->get('nombre');
+         $descripcion = $request->get('descripcion');
+
+         $categorias  = Categoria::orderBy('id_categoria', 'DESC')
+            ->nombre($nombre)
+            ->descripcion($descripcion)
+            ->condicion('1')
             ->paginate(25);
-            // html del formulario con nombre searchtext y categorias
-            return view('almacen.categoria.index', ["categorias"=>$categorias,"searchText"=>$query]);
-        }
+            // dd($categorias);
+        return view('almacen.categoria.index', compact('categorias'));
     }
+
 
     public function create()
     {

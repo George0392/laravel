@@ -16,4 +16,24 @@ class Categoria extends Model
     'descripcion',
     'condicion',
     ];
+
+    //Query Scope
+
+    public function scopeNombre($query, $nombre)
+    {
+        if($nombre)
+            return $query->where('nombre', 'LIKE', "%$nombre%");
+    }
+
+    public function scopeDescripcion($query, $descripcion)
+    {
+        if($descripcion)
+            return $query->where('descripcion', 'LIKE', "%$descripcion%");
+    }
+
+    public function scopeCondicion($query, $condicion)
+    {
+        if($condicion)
+            return $query->where('condicion', '=', "$condicion");
+    }
 }

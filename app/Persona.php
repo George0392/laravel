@@ -21,4 +21,26 @@ class Persona extends Model
          'telefono',
          'email',
     ];
+
+//Query Scope
+
+    public function scopeNombre($query, $nombre)
+    {
+        if($nombre)
+            return $query->where('nombre', 'LIKE', "%$nombre%");
+    }
+
+    public function scopeNumeroDocumento($query, $numero_documento)
+    {
+        if($numero_documento)
+            return $query->where('numero_documento', 'LIKE', "%$numero_documento%");
+    }
+
+    public function scopeCliente($query, $cliente)
+    {
+        if($cliente)
+            return $query->where('tipo_persona', 'LIKE', "%$cliente%");
+    }
+
+
 }
