@@ -28,21 +28,24 @@ class VentasController extends Controller
 
     public function index(Request $request)
     {
-        if ($request) {
+        // variables del query scope
+            $nombre        = $request->get('nombre');
+            $estado        = $request->get('estado');
+            $num_comprobante     = $request->get('num_comprobante');
 
-            $searchText = trim($request->get('searchText'));
             $venta = DB::table('venta as V')
             ->join('persona as P', 'P.id_persona', '=', 'V.id_cliente')
             ->join('detalle_venta as DV', 'V.id_venta', '=', 'DV.id_venta')
             ->select('V.id_venta', 'V.fecha_hora','V.created_at', 'P.nombre', 'V.tipo_comprobante', 'V.serie_comprobante', 'V.num_comprobante', 'V.impuesto', 'V.estado', DB::raw('AVG(V.total_venta) as total_venta '))
-            ->where('V.num_comprobante', 'LIKE', '%'.$searchText.'%')
-            ->orwhere('P.nombre', 'LIKE', '%'.$searchText.'%')
+            ->where('P.nombre', 'LIKE', '%'.$nombre.'%')
+            ->where('V.num_comprobante', 'LIKE', '%'.$num_comprobante.'%')
+            ->where('V.estado', 'LIKE', '%'.$estado.'%')
             ->orderBy('V.id_venta', 'desc')
             ->groupBy('V.id_venta', 'V.fecha_hora','V.created_at' ,'P.nombre', 'V.tipo_comprobante', 'V.serie_comprobante', 'V.num_comprobante', 'V.impuesto', 'V.estado')
             ->paginate(50);
 
-            return view('almacen.venta.index', compact('venta','searchText'));
-        }
+            return view('almacen.venta.index', compact('venta'));
+
     }
 
 

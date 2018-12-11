@@ -24,22 +24,26 @@ class ArticuloController extends Controller
 
     public function index(Request $request)
     {
-        if ($request) {
-            // html del formulario con nombre searchtext
-            $query=trim($request->get('searchText'));
+        // variables del query scope
+            $nombre        = $request->get('nombre');
+            $codigo        = $request->get('codigo');
+            $categoria     = $request->get('categoria');
+
+            $codigo_barras = new DNS1D();
+
             // consulta a la tabla articulo con join a categoria
-            $articulos=DB::table('articulo as A')
+            $articulos     = DB::table('articulo as A')
             ->join('categoria as C', 'A.id_categoria', '=', 'C.id_categoria')
             ->select('A.id_articulo', 'A.nombre', 'A.codigo', 'A.stock', 'C.nombre as categoria', 'A.descripcion', 'A.imagen', 'A.estado')
-            ->where('A.codigo', 'LIKE', '%'.$query.'%')
-            ->orwhere('A.id_articulo', 'LIKE', '%'.$query.'%')
+            ->where('A.nombre', 'LIKE', '%'.$nombre.'%')
+            ->where('A.codigo', 'LIKE', '%'.$codigo.'%')
+            ->where('C.nombre', 'LIKE', '%'.$categoria.'%')
             ->orderBy('id_articulo', 'DESC')
             ->paginate(50);
-            $codigo_barras = new DNS1D();
-            // html del formulario con nombre searchtext y categorias
-            return view('almacen.articulo.index', ["articulos"=>$articulos,"searchText"=>$query,"codigo_barras"=>$codigo_barras]);
-        }
+
+        return view('almacen.articulo.index', compact('articulos','codigo_barras'));
     }
+
 // carga la vista almacen/articulo/create se le envia $categorias para cargar la tabla y asignar la llave foranea
     public function create()
     {

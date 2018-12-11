@@ -8,9 +8,10 @@
 ###########################################################
 --}}
 <div class="row">
-	<div class="col-xs-12 col-sm-8">
+	<div class="col-xs-12 col-md-12">
 		<h3 style="display: contents;">Listado de Ventas <a href="{{URL::action('VentasController@create')}}" class="btn btn-primary "> Nuevo </a>
 		</h3>
+
 		@include('almacen.venta.filtro')
 		<br>
 		{{--
@@ -20,7 +21,8 @@
 		#
 		###########################################################
 		--}}
-		@include('almacen.venta.search')
+			@include('almacen.venta.search')
+
 	</div>
 </div>
 <div class="row">

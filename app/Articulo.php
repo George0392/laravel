@@ -21,4 +21,5 @@ class Articulo extends Model
     'imagen',
     'estado',
     ];
+
 }

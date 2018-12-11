@@ -5,12 +5,12 @@
 <div class="collapse" id="filtro">
 	<br>
 	<div class="form-group">
-		{{ Form::label('Buscar por:') }}
+		{{ Form::label('Por:') }}
 		{{ Form::text('nombre', null, ['class' => 'form-control', 'placeholder' => 'Nombre']) }}
 
 	</div>
 	<div class="form-group">
-		{{ Form::label(' Buscar por: ') }}
+		{{ Form::label('-') }}
 		{{ Form::text('descripcion', null, ['class' => 'form-control', 'placeholder' => 'Descripcion']) }}
 	</div>
 	<div class="form-group">

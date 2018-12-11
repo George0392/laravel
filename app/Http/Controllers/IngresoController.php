@@ -25,19 +25,26 @@ class IngresoController extends Controller
 
     public function index(Request $request)
     {
-        if ($request) {
-            $query=trim($request->get('searchText'));
+
+        // variables del query scope
+            $nombre          = $request->get('nombre');
+            $num_comprobante = $request->get('num_comprobante');
+            $estado          = $request->get('estado');
+
             $ingreso=DB::table('ingreso as I')
             ->join('persona as P', 'I.id_proveedor', '=', 'P.id_persona')
             ->join('detalle_ingreso as DI', 'I.id_ingreso', '=', 'DI.id_ingreso')
             ->select('I.id_ingreso', 'I.fecha_hora', 'P.nombre', 'I.tipo_comprobante', 'I.serie_comprobante', 'I.num_comprobante', 'I.impuesto', 'I.estado', DB::raw('SUM(DI.cantidad * DI.precio_compra) as total '))
-            ->where('I.num_comprobante', 'LIKE', '%'.$query.'%')
-            ->orwhere('P.nombre', 'LIKE', '%'.$query.'%')
+            ->where('P.nombre', 'LIKE', '%'.$nombre.'%')
+            ->where('I.num_comprobante', 'LIKE', '%'.$num_comprobante.'%')
+            ->where('I.estado', 'LIKE', '%'.$estado.'%')
+
             ->orderBy('I.id_ingreso', 'desc')
             ->groupBy('I.id_ingreso', 'I.fecha_hora', 'P.nombre', 'I.tipo_comprobante', 'I.serie_comprobante', 'I.num_comprobante', 'I.impuesto', 'I.estado')
             ->paginate(50);
-            return view('almacen.ingreso.index', ["ingreso"=>$ingreso,"searchText"=>$query]);
-        }
+
+            return view('almacen.ingreso.index',compact('ingreso') );
+
     }
 
 
